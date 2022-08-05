@@ -196,6 +196,7 @@ export default NextAuth({
     signIn: "/auth/login",
     signOut: "/auth/logout",
     error: "/auth/error", // Error code passed in query string as ?error=
+    verifyRequest: "/auth/verify-request",
     // newUser: "/auth/new", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
   providers,
