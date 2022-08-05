@@ -165,6 +165,12 @@ if (true) {
       maxAge: 10 * 60 * 60, // Magic links are valid for 10 min only
       // Here we setup the sendVerificationRequest that calls the email template with the identifier (email) and token to verify.
       sendVerificationRequest: ({ identifier, url }) => {
+        const originalUrl = new URL(url);
+        const webappUrl = new URL(WEBAPP_URL);
+        if (originalUrl.origin !== webappUrl.origin) {
+          url = url.replace(originalUrl.origin, webappUrl.origin);
+        }
+        console.log("sendVerificationRequest: url", url);
         const emailFile = readFileSync(path.join(emailsDir, "confirm-email.html"), {
           encoding: "utf8",
         });
@@ -196,7 +202,7 @@ export default NextAuth({
     signIn: "/auth/login",
     signOut: "/auth/logout",
     error: "/auth/error", // Error code passed in query string as ?error=
-    verifyRequest: "/auth/verify-request",
+    // verifyRequest: "/auth/verify-request",
     // newUser: "/auth/new", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
   providers,
@@ -440,6 +446,7 @@ export default NextAuth({
       return false;
     },
     async redirect({ url, baseUrl }) {
+      console.log("redirect url", url);
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
