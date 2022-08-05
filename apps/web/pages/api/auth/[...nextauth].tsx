@@ -170,7 +170,6 @@ if (true) {
         if (originalUrl.origin !== webappUrl.origin) {
           url = url.replace(originalUrl.origin, webappUrl.origin);
         }
-        console.log("sendVerificationRequest: url", url);
         const emailFile = readFileSync(path.join(emailsDir, "confirm-email.html"), {
           encoding: "utf8",
         });
@@ -446,10 +445,9 @@ export default NextAuth({
       return false;
     },
     async redirect({ url, baseUrl }) {
-      console.log("redirect url", url);
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
-      // Allows callback URLs on the same origin
+      // Allows callback URLs on the same domain
       else if (new URL(url).hostname === new URL(WEBAPP_URL).hostname) return url;
       return baseUrl;
     },
