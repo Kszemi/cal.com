@@ -12,7 +12,7 @@ import path from "path";
 
 import checkLicense from "@calcom/features/ee/common/server/checkLicense";
 import ImpersonationProvider from "@calcom/features/ee/impersonation/lib/ImpersonationProvider";
-import { WEBSITE_URL } from "@calcom/lib/constants";
+import { WEBAPP_URL } from "@calcom/lib/constants";
 import { symmetricDecrypt } from "@calcom/lib/crypto";
 import { defaultCookies } from "@calcom/lib/default-cookies";
 import { serverConfig } from "@calcom/lib/serverConfig";
@@ -174,7 +174,7 @@ if (true) {
           to: identifier,
           subject: "Your sign-in link for Cal.com",
           html: emailTemplate({
-            base_url: WEBSITE_URL,
+            base_url: WEBAPP_URL,
             signin_url: url,
             email: identifier,
           }),
@@ -191,7 +191,7 @@ export default NextAuth({
   session: {
     strategy: "jwt",
   },
-  cookies: defaultCookies(WEBSITE_URL?.startsWith("https://")),
+  cookies: defaultCookies(WEBAPP_URL?.startsWith("https://")),
   pages: {
     signIn: "/auth/login",
     signOut: "/auth/logout",
@@ -442,7 +442,7 @@ export default NextAuth({
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin === new URL(baseUrl || WEBSITE_URL).origin) return url;
+      else if (new URL(url).origin === new URL(baseUrl || WEBAPP_URL).origin) return url;
       return baseUrl;
     },
   },
