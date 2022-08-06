@@ -82,8 +82,6 @@ export default function Verify() {
     };
   }, [router]);
 
-  useSendFirstVerificationLogin();
-
   return (
     <div className=" bg-black bg-opacity-90 text-white backdrop-blur-md backdrop-grayscale backdrop-filter">
       <Head>
