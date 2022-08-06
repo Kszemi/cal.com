@@ -1,4 +1,5 @@
 import { IdentityProvider, UserPermissionRole } from "@prisma/client";
+import crypto from "crypto";
 import { readFileSync } from "fs";
 import Handlebars from "handlebars";
 import NextAuth, { Session } from "next-auth";
@@ -162,6 +163,9 @@ if (true) {
   const emailsDir = path.resolve(process.cwd(), "..", "..", "packages/emails", "templates");
   providers.push(
     EmailProvider({
+      async generateVerificationToken() {
+        return crypto.createHash("sha256").update(randomString(32)).digest("hex");
+      },
       maxAge: 10 * 60 * 60, // Magic links are valid for 10 min only
       // Here we setup the sendVerificationRequest that calls the email template with the identifier (email) and token to verify.
       sendVerificationRequest: ({ identifier, url }) => {
