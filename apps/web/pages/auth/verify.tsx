@@ -8,24 +8,26 @@ import { WEBAPP_URL } from "@calcom/lib/constants";
 import showToast from "@calcom/lib/notification";
 import Button from "@calcom/ui/Button";
 
-async function sendVerificationLogin(email: string, username: string) {
-  await signIn("email", {
-    email: email.toLowerCase(),
-    username: username.toLowerCase(),
-    redirect: false,
-    callbackUrl: WEBAPP_URL || "https://app.cal.com",
-  })
-    .then(() => {
-      showToast("Verification email sent", "success");
-    })
-    .catch((err) => {
-      showToast(err, "error");
-    });
-}
-
-function useSendFirstVerificationLogin() {
+export default function Verify() {
   const router = useRouter();
-  const { email, username } = router.query;
+  const { email, username, t, session_id, cancel } = router.query;
+  const [secondsLeft, setSecondsLeft] = useState(30);
+
+  async function sendVerificationLogin(email: string, username: string) {
+    await signIn("email", {
+      email: email.toLowerCase(),
+      username: username.toLowerCase(),
+      redirect: false,
+      callbackUrl: WEBAPP_URL || "https://app.cal.com",
+    })
+      .then(() => {
+        showToast("Verification email sent", "success");
+      })
+      .catch((err) => {
+        showToast(err, "error");
+      });
+  }
+
   const sent = useRef(false);
   useEffect(() => {
     if (router.isReady && !sent.current) {
@@ -35,12 +37,6 @@ function useSendFirstVerificationLogin() {
       })();
     }
   }, [email, router.isReady, username]);
-}
-
-export default function Verify() {
-  const router = useRouter();
-  const { email, username, t, session_id, cancel } = router.query;
-  const [secondsLeft, setSecondsLeft] = useState(30);
 
   // @note: check for t=timestamp and apply disabled state and secondsLeft accordingly
   // to avoid refresh to skip waiting 30 seconds to re-send email
